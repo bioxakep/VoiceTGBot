@@ -3,6 +3,5 @@
 /.idea/.gitignore
 /.idea/misc.xml
 /.idea/modules.xml
-/.idea/ODBClient.iml
 /.idea/vcs.xml
 /bot_core/config.py
