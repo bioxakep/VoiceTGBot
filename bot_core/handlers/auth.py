@@ -1,6 +1,4 @@
 from aiogram import Router, types, F
-from aiogram.filters.command import Command
-from aiogram.fsm.context import FSMContext
 
 auth_router = Router()
 
@@ -13,5 +11,7 @@ async def auth_without_phone(message: types.Message):
 
 @auth_router.message(F.contact)
 async def auth_with_phone(message: types.Message):
+    user_phone = message.contact.phone_number
+    user_id = message.contact.user_id
     await message.reply(f"Теперь ты в теме с номером {message.contact.phone_number}",
                         reply_markup=types.ReplyKeyboardRemove())
