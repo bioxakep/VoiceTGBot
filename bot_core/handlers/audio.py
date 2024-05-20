@@ -14,11 +14,13 @@ from .auth import AuthState
 audio_router = Router()
 
 
-@audio_router.message(StateFilter(AuthState.auth_with_phone), F.content_type == "voice")
+@audio_router.message(F.content_type == "voice")
 async def catch_audio_from_auth_user(message: types.Message):
-    if str(message.from_user.id) != str(bot_config.admin_id):
-        await message.reply(text='Не слышно...')
     # Сохранить в файл, прочитать распознаванием, вывести текст.
+
+    # if str(message.from_user.id) != str(bot_config.admin_id):
+    #     await message.reply(text='Не слышно...')
+
     voice_file_info = await message.bot.get_file(message.voice.file_id)
     voice_ogg = io.BytesIO()
     await message.bot.download_file(voice_file_info.file_path, voice_ogg)
@@ -39,6 +41,7 @@ async def catch_audio_from_auth_user(message: types.Message):
     voice_recognizer = VoiceRecognizer(model_path=voice_config.small_ru_model)
     recognized_text = voice_recognizer.recognize_from_tg(voice_ogg_path)
     await message.reply(text=recognized_text)
+    await message.reply_audio(audio=FSInputFile(path=voice_ogg_path, filename='File.ogg'))
 
 
 @audio_router.message(Command("voice"))
