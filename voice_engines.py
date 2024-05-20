@@ -62,19 +62,3 @@ class VoiceFactory:
         if not synthesis:
             return self.__voices
         return list(filter(lambda x: 'synthesis' in x, self.__voices))
-
-
-if __name__ == '__main__':
-    a = AudioSegment.from_ogg(
-        file=r'/Users/bx/PycharmProjects/ODBClient/audio_files/1267097955_20240519215004_file_12.ogg',
-        parameters=None
-    )
-    # print(a.channels)
-    # small_vp = VoiceParser(voice_config.small_ru_model)
-    # result = small_vp.recognize_from_tg()
-    v_f = VoiceFactory()
-    v_f.text_to_audio_file(
-        text='Привет, я сохраню это в аудио файл',
-        file_path=r'/Users/bx/PycharmProjects/ODBClient/audio_files/file.www'
-    )
-
