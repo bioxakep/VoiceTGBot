@@ -51,4 +51,4 @@ async def create_audio(message: types.Message):
     voice_factory.text_to_audio_file(text='Отправка аудиофайла', file_path=new_file_path)
     await message.bot.send_chat_action(message.from_user.id, aiogram.enums.ChatAction.UPLOAD_VOICE)
     input_file = FSInputFile(path=new_file_path, filename='Аудио.ogg')
-    await message.answer_audio(audio=open(new_file_path, 'rb'), title='Hello', caption='Sound', performer='AAA')
+    await message.answer_audio(audio=input_file, title='Hello', caption='Sound', performer='AAA')
