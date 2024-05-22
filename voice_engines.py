@@ -1,5 +1,7 @@
 import os
 import json
+from datetime import datetime
+
 import pyttsx3
 from vosk import Model, KaldiRecognizer
 from pydub import AudioSegment
@@ -28,7 +30,7 @@ class VoiceRecognizer:
         os.remove(voice_wav_path)
         ru_res = json.loads(self.__recognizer.FinalResult())
         if 'text' in ru_res.keys():
-            return f"Распознано на русском языке: {ru_res.get('text')}"
+            return f"Распознан текст: {ru_res.get('text')}"
         return "Не распознано."
 
 
@@ -49,16 +51,25 @@ class VoiceFactory:
         self.__engine.say(text)
         self.__engine.runAndWait()
 
-    def text_to_audio_file(self, text: str, file_path: str):
-        temp_file_path = file_path.rstrip('.ogg')
-        self.__engine.save_to_file(text=text, filename=temp_file_path)
+    def text_to_audio_file(self, text: str):
+        file_name: str = 'FROM_TEXT_' + datetime.now().strftime("%Y%m%d%H%M%S") + '.wav'
+        temp_audio_file_path: str = os.path.join(voice_config.audio_files, file_name)
+        self.__engine.save_to_file(text=text, filename=temp_audio_file_path)
         self.__engine.runAndWait()
-        audio_file = AudioSegment.from_file(temp_file_path)
-        audio_file.export(out_f=file_path, format='OGG')
+        audio_file = AudioSegment.from_file(temp_audio_file_path)
+        print(audio_file.channels, audio_file.duration_seconds)
+        ogg_file_path: str = temp_audio_file_path.replace('.wav', '.ogg')
+        audio_file.export(out_f=ogg_file_path, format='ogg', codec='libopus')
         del audio_file
-        os.remove(temp_file_path)
+        os.remove(temp_audio_file_path)
+        return ogg_file_path
 
     def get_voices(self, synthesis: bool = False):
         if not synthesis:
             return self.__voices
         return list(filter(lambda x: 'synthesis' in x, self.__voices))
+
+
+if __name__ == '__main__':
+    factory = VoiceFactory()
+    factory.text_to_audio_file(text='Привет малышка, как твои дела? Хотел увидеть отчет о проделанной работе')
