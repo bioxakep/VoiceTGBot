@@ -1,4 +1,1 @@
-bot:
-    -dispatcher
-        -auth-router
-        -search-router
+Vosk model recognition and pyttsx3 engine to trancform voice to text and reverse.
